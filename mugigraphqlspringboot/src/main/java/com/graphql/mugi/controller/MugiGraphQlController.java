@@ -5,6 +5,7 @@ import com.graphql.mugi.service.GraphqlService;
 import org.reactivestreams.Publisher;
 import org.springframework.graphql.data.method.annotation.*;
 import org.springframework.stereotype.Controller;
+import reactor.core.publisher.Flux;
 
 import java.util.Collection;
 import java.util.List;
@@ -57,7 +58,7 @@ public class MugiGraphQlController {
     }
 
     @SubscriptionMapping
-    public Publisher<String> greetNewUsers() {
+    public Flux<String> greetNewUsers() {
         return graphqlService.greetNewUser();
     }
 }

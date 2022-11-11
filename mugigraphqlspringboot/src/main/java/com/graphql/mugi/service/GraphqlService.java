@@ -4,7 +4,6 @@ import com.graphql.mugi.entity.Address;
 import com.graphql.mugi.entity.User;
 import com.graphql.mugi.entity.UserInput;
 import org.reactivestreams.Publisher;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Sinks;
@@ -24,11 +23,15 @@ public class GraphqlService {
     private static Map<Integer, User> userData = new ConcurrentHashMap<>();
     private static Map<Integer, Address> userAddress = new ConcurrentHashMap<>();
 
-    @Autowired
-    private Sinks.Many<User> userSink;
+    private final Sinks.Many<User> userSink;
 
-    @Autowired
-    private Flux<User> userFlux;
+
+    private final Flux<User> userFlux;
+
+    public GraphqlService(Sinks.Many<User> userSink, Flux<User> userFlux) {
+        this.userSink = userSink;
+        this.userFlux = userFlux;
+    }
 
     public User getUserById(int userId) {
         return userData.containsKey(userId) ?
@@ -69,7 +72,7 @@ public class GraphqlService {
         return user;
     }
 
-    public Publisher<String> greetNewUser() {
+    public Flux<String> greetNewUser() {
         return userFlux.map(u -> greet(Optional.of(u.getFirstName() + " " + u.getLastName())));
     }
 
